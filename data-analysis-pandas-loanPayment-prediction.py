@@ -31,6 +31,8 @@ from sklearn.metrics import f1_score, recall_score, precision_score, roc_auc_sco
 from sklearn.metrics import classification_report, precision_recall_curve, roc_curve, auc
 
 
+# ### First stage
+
 # In[ ]:
 
 
@@ -123,5 +125,31 @@ def missingVals(df):
 # In[ ]:
 
 
+# Drop the columns with high percentage (80%)
+missingCols = list(missing.index[
+    missing["Percentage (%) of Missing Value"] > 80])
 
+dfSub = df.drop(columns = missingCols)
+
+
+# In[ ]:
+
+
+# Check
+missingVals(dfSub)
+
+
+# In[ ]:
+
+
+# After check missings, check duplicated values and drop.
+dfSub[dfSub.duplicated()]
+dfSub.drop_duplicates(inplace= True)
+
+
+# In[ ]:
+
+
+# Check once, how many rows and cols remaining.
+dfSub.shape
 
