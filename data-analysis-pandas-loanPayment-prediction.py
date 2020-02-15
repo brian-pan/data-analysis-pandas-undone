@@ -199,8 +199,27 @@ leakCols = ["total_pymnt_inv","total_rec_prncp","funded_amnt","funded_amnt_inv",
 dfSub.drop(columns = leakCols, inplace=True)
 
 
-# In[24]:
+# In[25]:
 
 
-#dfSub.shape
+dfSub.shape
+
+
+# In[26]:
+
+
+54 - 43 == len(leakCols)
+
+
+# In[29]:
+
+
+# Get the statistical parameters again.
+dfSub.describe()
+
+
+# In[ ]:
+
+
+
 
