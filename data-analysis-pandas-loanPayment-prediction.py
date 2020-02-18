@@ -276,7 +276,7 @@ for i in catCols:
     dfSub[i] = dfSub[i].str.strip()
 
 
-# In[48]:
+# In[29]:
 
 
 pd.set_option("display.max_columns", None)
@@ -291,7 +291,7 @@ dfSub[catCols].head(8)
 type(catCols)
 
 
-# In[35]:
+# In[31]:
 
 
 # Return frequency for every element (for loop).
@@ -299,40 +299,40 @@ for each in catCols:
     print(dfSub[each].value_counts().to_frame())
 
 
-# In[37]:
+# In[32]:
 
 
 dfSub["emp_title"].value_counts()
 
 
-# In[46]:
+# In[33]:
 
 
 dfSub["title"].value_counts()
 
 
-# In[52]:
+# In[34]:
 
 
 # check homogeny
 dfSub["initial_list_status"].value_counts()
 
 
-# In[53]:
+# In[35]:
 
 
 # check homogeny
 dfSub["hardship_flag"].value_counts()
 
 
-# In[57]:
+# In[36]:
 
 
 # check homogeny
 dfSub["pymnt_plan"].value_counts()
 
 
-# In[55]:
+# In[37]:
 
 
 # Check homogeny
@@ -345,7 +345,7 @@ dfSub["application_type"].value_counts()
 
 # The predictor "sub_grade" is the detailed classification of "grade", here we only keep to simplify the workload.	
 
-# In[60]:
+# In[38]:
 
 
 dfSub["title"].value_counts()
@@ -353,7 +353,7 @@ dfSub["title"].value_counts()
 
 # This predictor has too many different values (classifications) and some values only showed once. Instead of ignoring the partical infomation (for example, value less than 10 is not considered), it is better to drop the entire column. "emp_title" variable has the same problem.
 
-# In[61]:
+# In[39]:
 
 
 dfSub["zip_code"]
@@ -361,7 +361,7 @@ dfSub["zip_code"]
 
 # This predictor is useless beacuse it has imcomplete infomation, it only contains the first 3 digits of every zip code. It should be droped.
 
-# In[62]:
+# In[40]:
 
 
 # Creating a list including the columns that should be droped.
@@ -371,21 +371,21 @@ dropCols = ['desc','issue_d','last_pymnt_d','last_credit_pull_d',
             'sub_grade','initial_list_status','application_type']
 
 
-# In[63]:
+# In[41]:
 
 
 # drop the cols
 dfSub = dfSub.drop(columns = dropCols, axis = 1)
 
 
-# In[64]:
+# In[42]:
 
 
 # have a look of the new one
 dfSub.head()
 
 
-# In[65]:
+# In[43]:
 
 
 # remaining categorical predictors:
@@ -397,13 +397,13 @@ for element in catCols:
         continue
 
 
-# In[70]:
+# In[44]:
 
 
 print(rCatCols)
 
 
-# In[71]:
+# In[45]:
 
 
 type(rCatCols)
@@ -411,13 +411,13 @@ type(rCatCols)
 
 # ### We are aiming to convert all categorical predictors into numerical ones.
 
-# In[88]:
+# In[46]:
 
 
 objColsList = dfSub.select_dtypes(include=['object']).columns.tolist()
 
 
-# In[95]:
+# In[47]:
 
 
 # convert percentage (%) into decimals
@@ -426,14 +426,37 @@ for eachColumn in objColsList:
         dfSub[eachColumn] = dfSub[eachColumn].str.replace('%', '').astype(float)/100
 
 
-# In[96]:
+# In[48]:
 
 
 dfSub[rCatCols].head()
 
 
-# In[ ]:
+# In[49]:
 
 
+dfSub["verification_status"].value_counts()
 
+
+# In[54]:
+
+
+# Convert verification status into 1 (verified) and 0 (not verified):
+dfSub.loc[dfSub["verification_status"] == "Not Verified", "verification_status"] = 0
+dfSub.loc[dfSub["verification_status"] == "Verified", "verification_status"] = 1
+dfSub.loc[dfSub["verification_status"] == "Source Verified", "verification_status"] = 1
+
+
+# In[55]:
+
+
+# double check it
+dfSub["verification_status"].value_counts()
+
+
+# In[62]:
+
+
+# what remaining:
+list(dfSub.select_dtypes(include=['object']).drop(columns = ["loan_status"]).columns)
 
