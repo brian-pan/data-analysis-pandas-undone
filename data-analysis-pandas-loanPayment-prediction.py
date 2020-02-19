@@ -211,7 +211,7 @@ dfSub.shape
 54 - 43 == len(leakCols) - 1
 
 
-# ### Numerical features
+# #### Numerical features
 
 # In[21]:
 
@@ -242,7 +242,7 @@ dfSub.drop(columns=[
 dfSub.shape
 
 
-# ### Categorical features
+# #### Categorical features
 
 # In[25]:
 
@@ -438,7 +438,7 @@ dfSub[rCatCols].head()
 dfSub["verification_status"].value_counts()
 
 
-# In[54]:
+# In[50]:
 
 
 # Convert verification status into 1 (verified) and 0 (not verified):
@@ -447,16 +447,98 @@ dfSub.loc[dfSub["verification_status"] == "Verified", "verification_status"] = 1
 dfSub.loc[dfSub["verification_status"] == "Source Verified", "verification_status"] = 1
 
 
-# In[55]:
+# In[51]:
 
 
 # double check it
 dfSub["verification_status"].value_counts()
 
 
-# In[62]:
+# In[61]:
 
 
 # what remaining:
-list(dfSub.select_dtypes(include=['object']).drop(columns = ["loan_status"]).columns)
+cateRemainList = list(dfSub.select_dtypes(include=['object']).drop(columns = ["loan_status"]).columns)
+cateRemainList
+
+
+# In[56]:
+
+
+# Check if there is any missing value remaining
+checkMis = missingVals(dfSub)
+checkMis
+
+
+# In[58]:
+
+
+# get rid of missings by replacing them to 0:
+dfSub["mths_since_last_delinq"].fillna(value=0, inplace=True)
+dfSub["pub_rec_bankruptcies"].fillna(value=0, inplace=True)
+dfSub["revol_util"].fillna(value=0, inplace=True)
+
+
+# In[59]:
+
+
+# check again
+checkMis = missingVals(dfSub)
+checkMis
+
+
+# In[65]:
+
+
+# define a function to deal with the categorical variables
+def cateToNum(df):
+    '''
+    Convert categorical columns into numerical columns 
+    by dividing them into subgroups.
+    '''
+    # original column list
+    oriColLst = df.columns.tolist()
+    # categorical column in list
+    cateCol = [c for c in df.columns if df[c].dtype == 'object']
+    # get dummy variable and assign new columns to dataframe
+    df = pd.get_dummies(df, dummy_na = True, columns = cateCol)
+    
+    # also return a new list of column of dummy columns (not required)
+    newCol = []
+    for each in df.columns:
+        if each not in oriColLst:
+            newCol.append(each)
+    return df
+
+
+# In[73]:
+
+
+dfSub = cateToNum(dfSub)
+
+
+# In[74]:
+
+
+dfSub.head()
+
+
+# In[75]:
+
+
+dfSub.shape
+
+
+# In[76]:
+
+
+# make a copy
+dfFinal = dfSub.copy()
+
+
+# In[78]:
+
+
+# to csv
+dfSub.to_csv("cleaned_data.csv")
 
